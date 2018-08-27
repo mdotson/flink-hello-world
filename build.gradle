@@ -1,6 +1,7 @@
 plugins {
     id 'scala'
     id 'idea'
+    id 'com.github.maiflai.scalatest' version '0.22'
 }
 
 repositories {
@@ -8,9 +9,9 @@ repositories {
     mavenLocal()
 }
 
-test {
-    useJUnitPlatform()
-}
+//test {
+//    useJUnitPlatform()
+//}
 
 group 'com.github.mdotson'
 version '1.0'
@@ -26,8 +27,9 @@ dependencies {
     compile group: 'org.apache.flink', name: 'flink-connector-kafka-0.11_2.11', version: '1.6.0'
     compile group: 'org.apache.flink', name: 'flink-streaming-scala_2.11', version: '1.6.0'
     compile group: 'org.apache.flink', name: 'flink-avro', version: '1.6.0'
+
     testCompile group: 'org.scalatest', name: 'scalatest_2.11', version: '3.0.5'
     testCompile group: 'net.manub', name: 'scalatest-embedded-kafka_2.11', version: '1.1.1'
-
+    testRuntime 'org.pegdown:pegdown:1.4.2'
 
 }
