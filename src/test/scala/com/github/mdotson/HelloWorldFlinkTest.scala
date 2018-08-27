@@ -5,8 +5,8 @@ import org.apache.kafka.common.serialization.{StringDeserializer, StringSerializ
 import org.scalatest.Matchers._
 import org.scalatest._
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class HelloWorldFlinkTest extends WordSpec with EmbeddedKafka {
   "runs with embedded kafka on arbitrary available ports" should {
@@ -16,16 +16,14 @@ class HelloWorldFlinkTest extends WordSpec with EmbeddedKafka {
 
       withRunningKafkaOnFoundPort(userDefinedConfig) { implicit actualConfig =>
         Future {
-          val fpp = FlinkExample.main("localhost:" + actualConfig.kafkaPort)
+          val fcp1 = new FlinkConsumerProducer(1).main("localhost:" + actualConfig.kafkaPort)
         }
         implicit val stringDeserializer = new StringDeserializer()
         implicit val stringSerializer = new StringSerializer()
-//        createCustomTopic("input")
-        createCustomTopic("output")
-        // now a kafka broker is listening on actualConfig.kafkaPort
+
         publishStringMessageToKafka("input", "message")
         val result = consumeFirstStringMessageFrom("output")
-        result shouldBe "MESSAGE"
+        result shouldBe "1_MESSAGE"
       }
     }
   }

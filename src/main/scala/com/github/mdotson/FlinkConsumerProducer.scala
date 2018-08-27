@@ -1,17 +1,11 @@
 package com.github.mdotson
 
-import java.util.concurrent.TimeUnit
-
 import org.apache.flink.api.common.serialization.{DeserializationSchema, SerializationSchema}
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
-import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer011, FlinkKafkaProducer011}
 
-object FlinkExample {
-
-  val stopWords = Set("a", "an", "the")
-  val window = Time.of(10, TimeUnit.SECONDS)
+class FlinkConsumerProducer(val id: Int) extends Serializable {
 
   def main(bootstrapServers: String): Unit = {
     val env = StreamExecutionEnvironment.createLocalEnvironment()
@@ -36,10 +30,9 @@ object FlinkExample {
 
     val lines = env.addSource(kafkaConsumer)
 
-    val wordCounts = WordCount.countWords(lines, stopWords, window)
-
-    wordCounts
-      .map(_.toString)
+    val wordCounts = lines
+      .map(word => word.toUpperCase())
+      .map(word => s"${id}_$word")
       .addSink(kafkaProducer)
 
     env.execute()
